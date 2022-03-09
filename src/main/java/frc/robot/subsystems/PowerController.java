@@ -7,6 +7,11 @@ import frc.robot.Constants;
 public class PowerController extends SubsystemBase {
     static PowerDistribution powerDistribution = new PowerDistribution(Constants.PDP, PowerDistribution.ModuleType.kRev);
 
+    public PowerController()
+    {
+        powerDistribution.close();
+    }
+
     public Double getVoltage() {
         return powerDistribution.getVoltage();
     }

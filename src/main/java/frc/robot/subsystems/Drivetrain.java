@@ -12,6 +12,8 @@ public class Drivetrain extends SubsystemBase {
     static boolean leftBrake = false;
     static boolean rightBrake = false;
 
+    static Pneumatics pneumatics;
+
     static WPI_TalonFX leftOne = new WPI_TalonFX(Constants.fxLeftOne);
     static WPI_TalonFX leftTwo = new WPI_TalonFX(Constants.fxLeftTwo);
     static WPI_TalonFX leftThree = new WPI_TalonFX(Constants.fxLeftThree);
@@ -25,6 +27,11 @@ public class Drivetrain extends SubsystemBase {
             ((MotorController) rightOne, (MotorController) rightTwo, (MotorController) rightThree);
 
     static DifferentialDrive drive = new DifferentialDrive(leftMotors, rightMotors);
+
+    public Drivetrain(Pneumatics pNeumatics) {
+        pneumatics = pNeumatics;
+        rightMotors.setInverted(true);
+    }
 
     public void arcadeDrive(double move, double rotate) {
         final double MIN_MOVE_THRESHOLD = 0.07;
@@ -85,6 +92,21 @@ public class Drivetrain extends SubsystemBase {
         rightOne.disable();
         rightTwo.disable();
         rightThree.disable();
+    }
+
+    public void disableMotorPair(int motorPair)
+    {
+        switch(motorPair)
+        {
+            case 1:
+                leftThree.disable();
+                rightThree.disable();
+                break;
+            case 2:
+                leftTwo.disable();
+                rightTwo.disable();
+                break;
+        }
     }
 
     public void setVoltageCompensation(boolean enabled)

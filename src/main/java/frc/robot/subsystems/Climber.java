@@ -1,20 +1,31 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Climber extends SubsystemBase {
+
+    static Pneumatics pneumatics;
     static WPI_TalonFX climberMotor = new WPI_TalonFX(Constants.fxClimber);
-    static WPI_TalonSRX pivotMotor = new WPI_TalonSRX(Constants.srxPivot);
+    static newDoubleSolenoid pivotPiston = new newDoubleSolenoid(PneumaticsModuleType.REVPH, Constants.climberPistonFoward, Constants.climberPistonReverse, "climber");
+
+    DigitalInput magLimit = new DigitalInput(1);
 
     public static double climberPosition = 0;
     private static double oldClimberPosition = 0;
 
-    public static int pivotPosition = 0;
-    private static double oldPivotPosition = 0;
+    public Climber(Pneumatics pNeumatics)
+    {
+        pneumatics = pNeumatics;
+        climberMotor.setNeutralMode(NeutralMode.Brake);
+    }
 
     @Override
     public void periodic() {
@@ -55,6 +66,28 @@ public class Climber extends SubsystemBase {
         climberMotor.set(pidController.calculate(climberPosition, Position));
     }
 
+    public void runWinch(double speed)
+    {
+        if(!(magLimit.get() && speed > 0))
+        {
+            climberMotor.set(speed*0.6);
+        }
+        else if(magLimit.get() && speed > 0)
+        {
+            climberMotor.set(0);
+        }
+    }
+
+    public void extendClimberPiston()
+    {
+        pivotPiston.set(DoubleSolenoid.Value.kReverse);
+    }
+
+    public void retractClimberPiston()
+    {
+        pivotPiston.set(DoubleSolenoid.Value.kForward);
+    }
+
     public Double getClimberRPM()
     {
         return (climberMotor.getSelectedSensorVelocity()*600)/2048;
@@ -70,18 +103,7 @@ public class Climber extends SubsystemBase {
         climberMotor.disable();
     }
 
-    public void disablePivot()
-    {
-        pivotMotor.disable();
-    }
-
     public void setClimberVoltageCompensation(boolean enabled)
-    {
-        climberMotor.configVoltageCompSaturation(Constants.saturationVoltage);
-        climberMotor.enableVoltageCompensation(enabled);
-    }
-
-    public void setPivotVoltageCompensation(boolean enabled)
     {
         climberMotor.configVoltageCompSaturation(Constants.saturationVoltage);
         climberMotor.enableVoltageCompensation(enabled);

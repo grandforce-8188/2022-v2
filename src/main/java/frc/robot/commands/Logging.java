@@ -18,10 +18,10 @@ import java.time.format.DateTimeFormatter;
 
 public class Logging {
 
-    static final Drivetrain drivetrain = new Drivetrain();
     static final PowerController PDP = new PowerController();
     static final Pneumatics pneumatics = new Pneumatics();
     static final Limelight limelight = new Limelight();
+    static final Drivetrain drivetrain = new Drivetrain(pneumatics);
 
     public static void writeLog() {
         String logFile = "";
@@ -75,8 +75,8 @@ public class Logging {
                         "               verticalMotor: " + logFX(Constants.fxClimber) +
                         "\n               pivotMotor: " + logSRX(Constants.srxPivot) +
                         "\n\n          Shooter:\n" +
-                        "               shooterLeader"+ logFX(Constants.srxShooterLeader)+
-                        "\n               shooterFollower"+ logFX(Constants.srxShooterFollower)+
+                        "               shooterLeader"+ logFX(Constants.fxShooterLeader)+
+                        "\n               shooterFollower"+ logFX(Constants.fxShooterFollower)+
                         "\n\n          Intake:\n" +
                         "               intakeMotor: " + logSRX(Constants.srxIntake) +
                         "\n               intakeOmniLeader: " + logSRX(Constants.srxOmniLeader) +

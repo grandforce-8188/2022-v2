@@ -1,21 +1,36 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.PneumaticHub;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
+import edu.wpi.first.wpilibj.*;
+import frc.robot.Constants;
 
 public class Pneumatics {
-    Compressor compressor = new Compressor(0, PneumaticsModuleType.REVPH);
-    PneumaticHub pneumaticHub = new PneumaticHub(1);
+    Compressor compressor = new Compressor(1, PneumaticsModuleType.REVPH);
+    PneumaticHub pneumaticHub = new PneumaticHub();
 
-    DoubleSolenoid doubleSolenoids[] = {
-            new DoubleSolenoid(PneumaticsModuleType.REVPH,0,1), //Gearshifter
+    public Pneumatics(){
+        enableCompressor(60.0, 120.0);
+        doubleSolenoids[1].toggle();
+        doubleSolenoids[2].toggle();
+    }
+
+    newDoubleSolenoid[] doubleSolenoids = {
+            new newDoubleSolenoid(PneumaticsModuleType.REVPH,
+                    Constants.gearShifterFoward,Constants.gearShifterReverse, "gearshifter"), //Gearshifter
+            new newDoubleSolenoid(PneumaticsModuleType.REVPH,
+                    Constants.intakePistonFoward,Constants.intakePistonReverse, "intake"), //Intake
+            new newDoubleSolenoid(PneumaticsModuleType.REVPH,
+                    Constants.climberPistonFoward,Constants.climberPistonReverse, "climber"), //Climber
+
     };
 
     public void shiftDoubleSolenoid(int number, DoubleSolenoid.Value value)
     {
         doubleSolenoids[number].set(value);
+    }
+
+    public newDoubleSolenoid getSolenoid(int number)
+    {
+        return doubleSolenoids[number];
     }
 
     public Double getCompressorVoltage()
@@ -38,7 +53,10 @@ public class Pneumatics {
         compressor.disable();
     }
 
-    public void enableCompressor(Double minPressure, Double maxPressure) {compressor.enableAnalog(minPressure, maxPressure);}
+    public void enableCompressor(Double minPressure, Double maxPressure) {
+        compressor.enableDigital(); //.enableAnalog(minPressure, maxPressure);
+        //System.out.println("Compressor");
+    }
 
     public double getChannelVoltage(int channel)
     {
@@ -48,5 +66,18 @@ public class Pneumatics {
     public double getChannelPressure(int channel)
     {
         return pneumaticHub.getPressure(channel);
+    }
+}
+class newDoubleSolenoid extends DoubleSolenoid{
+    public static String key;
+
+    public newDoubleSolenoid(PneumaticsModuleType moduleType, int forwardChannel, int reverseChannel, String solenoidKey) {
+        super(moduleType, forwardChannel, reverseChannel);
+        key = solenoidKey;
+    }
+
+    public String getKey()
+    {
+       return key;
     }
 }

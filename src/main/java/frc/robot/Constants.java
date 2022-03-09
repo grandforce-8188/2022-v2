@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -21,7 +23,16 @@ public final class Constants {
      */
 
     //Electronics
-    public static final int PDP = 0;
+    public static final int PCM = 1,
+                            PDP = 2;
+
+    public static final int gearShifterFoward = 2,
+                            gearShifterReverse = 3,
+                            intakePistonFoward = 0,
+                            intakePistonReverse=1,
+                            climberPistonFoward=4,
+                            climberPistonReverse=5;
+
 
     //Drivetrain Motors
     public static final int fxLeftOne = 10,
@@ -43,14 +54,42 @@ public final class Constants {
                             srxOmniFollower = 23;
 
     //Shooter Motors
-    public static final int srxShooterLeader = 24,
-                            srxShooterFollower = 25;
+    public static final int fxShooterLeader = 17,
+                            fxShooterFollower = 18;
+
+    public static final int srxKickWheel = 24;
+
+    public static final int pwmFeederLeader = 0,
+                            pwmFeederFollower= 1,
+                            pwmShooterKickWheel=2;
+
     /////////////////////////////////////////////////////////////////////////////
 
     //DoubleSolenoids
-    public static final int intakeForward = 0,
-                            intakeReverse = 1;
 
     //Saturation Voltage
     public static final double saturationVoltage = 11.0;
+
+    public static final class AutoConstants {
+        public static final double autonomousMaxSpeed = 3;
+        public static final double autonomousMaxAcceleration = 3;
+
+        // Reasonable baseline values for a RAMSETE follower in units of meters and seconds
+        public static final double ramsetB = 2;
+        public static final double ramsetZeta = 0.7;
+    }
+
+    public static final class DrivetrainConstants {
+        static final Double wheelDistance = 0.568;
+        public static final DifferentialDriveKinematics driveKinematics = new DifferentialDriveKinematics(wheelDistance);
+    }
+
+    public static final class climberConstants {
+        public static final double maxHeight = 12000;
+    }
+
+    public static final class limelightConstants {
+        public static final double desiredX = 0.0;
+        public static final double desiredY = 0.0;
+    }
 }
