@@ -12,8 +12,6 @@ public class Drivetrain extends SubsystemBase {
     static boolean leftBrake = false;
     static boolean rightBrake = false;
 
-    static Pneumatics pneumatics;
-
     static WPI_TalonFX leftOne = new WPI_TalonFX(Constants.fxLeftOne);
     static WPI_TalonFX leftTwo = new WPI_TalonFX(Constants.fxLeftTwo);
     static WPI_TalonFX leftThree = new WPI_TalonFX(Constants.fxLeftThree);
@@ -28,8 +26,7 @@ public class Drivetrain extends SubsystemBase {
 
     static DifferentialDrive drive = new DifferentialDrive(leftMotors, rightMotors);
 
-    public Drivetrain(Pneumatics pNeumatics) {
-        pneumatics = pNeumatics;
+    public Drivetrain() {
         rightMotors.setInverted(true);
     }
 

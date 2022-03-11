@@ -17,7 +17,6 @@ import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Pneumatics;
 import frc.robot.subsystems.PowerController;
 import frc.robot.subsystems.Shooter;
 
@@ -109,11 +108,9 @@ public class Robot extends TimedRobot {
     shooter.setDefaultCommand(new fireShooter(shooter, feeder, new JoystickButton(joystick, 1)));
   }
 
-  public final Pneumatics pneumatics = new Pneumatics();
-
-  public final Climber climber = new Climber(pneumatics);
-  public final Drivetrain drivetrain = new Drivetrain(pneumatics);
-  public final Intake intake = new Intake(pneumatics);
+  public final Climber climber = new Climber();
+  public final Drivetrain drivetrain = new Drivetrain();
+  public final Intake intake = new Intake();
   public final PowerController powerController = new PowerController();
   public final Shooter shooter = new Shooter();
   public final Feeder feeder = new Feeder();
@@ -127,8 +124,8 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    JoystickButton winchUpButton = new JoystickButton(joystick, 9); //Winch up
-    JoystickButton winchDownButton = new JoystickButton(joystick, 10); //Winch down
+    JoystickButton winchUpButton = new JoystickButton(joystick, 11); //Winch up
+    JoystickButton winchDownButton = new JoystickButton(joystick, 12); //Winch down
 
     JoystickButton pistonUpButton = new JoystickButton(joystick, 7); //Piston Up
     JoystickButton pistonDownButton = new JoystickButton(joystick, 8); //Piston Down

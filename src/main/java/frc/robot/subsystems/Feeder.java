@@ -1,33 +1,33 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+
+import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class Feeder extends SubsystemBase {
-    PWMSparkMax feederLeader = new PWMSparkMax(Constants.pwmFeederLeader);
-    PWMSparkMax feederFollower = new PWMSparkMax(Constants.pwmFeederFollower);
+    CANSparkMax feederLeader = new CANSparkMax(Constants.srxOmniLeader, CANSparkMax.MotorType.kBrushless);
+    CANSparkMax feederFollower = new CANSparkMax(Constants.srxOmniFollower, CANSparkMax.MotorType.kBrushless);
 
     final double feederSpeed = 1.0;
 
     public Feeder()
     {
-        feederFollower.setInverted(true);
+        feederFollower.follow(feederLeader, true);
     }
 
     public void runFeeder()
     {
+        System.out.println("Feeder running");
         feederLeader.set(feederSpeed);
-        feederFollower.set(feederSpeed);
     }
 
     public void reverseFeeder() {
         feederLeader.set(-feederSpeed);
-        feederFollower.set(-feederSpeed);
     }
 
     public void stopFeeder() {
         feederLeader.set(0.0);
-        feederFollower.set(0.0);
     }
 }

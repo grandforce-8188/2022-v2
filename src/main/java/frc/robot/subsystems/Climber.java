@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -12,18 +11,16 @@ import frc.robot.Constants;
 
 public class Climber extends SubsystemBase {
 
-    static Pneumatics pneumatics;
     static WPI_TalonFX climberMotor = new WPI_TalonFX(Constants.fxClimber);
-    static newDoubleSolenoid pivotPiston = new newDoubleSolenoid(PneumaticsModuleType.REVPH, Constants.climberPistonFoward, Constants.climberPistonReverse, "climber");
+    static DoubleSolenoid pivotPiston = new DoubleSolenoid(PneumaticsModuleType.REVPH, Constants.climberPistonFoward, Constants.climberPistonReverse);
 
     DigitalInput magLimit = new DigitalInput(1);
 
     public static double climberPosition = 0;
     private static double oldClimberPosition = 0;
 
-    public Climber(Pneumatics pNeumatics)
+    public Climber()
     {
-        pneumatics = pNeumatics;
         climberMotor.setNeutralMode(NeutralMode.Brake);
     }
 
@@ -68,14 +65,15 @@ public class Climber extends SubsystemBase {
 
     public void runWinch(double speed)
     {
-        if(!(magLimit.get() && speed > 0))
-        {
-            climberMotor.set(speed*0.6);
-        }
-        else if(magLimit.get() && speed > 0)
-        {
-            climberMotor.set(0);
-        }
+        climberMotor.set(speed*0.6);
+//        if(!(magLimit.get() && speed > 0))
+//        {
+//            climberMotor.set(speed*0.6);
+//        }
+//        else if(magLimit.get() && speed > 0)
+//        {
+//            climberMotor.set(0);
+//        }
     }
 
     public void extendClimberPiston()

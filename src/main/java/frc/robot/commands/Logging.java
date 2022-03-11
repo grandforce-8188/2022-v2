@@ -6,7 +6,6 @@ import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Limelight;
-import frc.robot.subsystems.Pneumatics;
 import frc.robot.subsystems.PowerController;
 
 import java.io.BufferedWriter;
@@ -19,9 +18,8 @@ import java.time.format.DateTimeFormatter;
 public class Logging {
 
     static final PowerController PDP = new PowerController();
-    static final Pneumatics pneumatics = new Pneumatics();
     static final Limelight limelight = new Limelight();
-    static final Drivetrain drivetrain = new Drivetrain(pneumatics);
+    static final Drivetrain drivetrain = new Drivetrain();
 
     public static void writeLog() {
         String logFile = "";
@@ -43,7 +41,7 @@ public class Logging {
                     logFile += "               " + String.valueOf(i) + ":"
                             + PDP.getChannelCurrent(i) + "A \n";
                 }
-                logFile += "\n          Compressor: " +
+                /*logFile += "\n          Compressor: " +
                         String.valueOf(pneumatics.getCompressorVoltage()) + "v " +
                         String.valueOf(pneumatics.getCompressorCurrent()) + "A " +
                         String.valueOf(pneumatics.getCompressorPressure() ) + "W " +
@@ -53,7 +51,7 @@ public class Logging {
                     logFile += "               " + String.valueOf(i) + ":"
                             + pneumatics.getChannelVoltage(i) + "V \n"
                             + pneumatics.getChannelPressure(i) + "PSI \n";
-                }
+                }*/
 
                 logFile += "\n          Limelight: " +
                         String.valueOf(limelight.getLimelightTarget()) +
