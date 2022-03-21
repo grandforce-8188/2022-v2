@@ -5,6 +5,9 @@
 package frc.robot;
 
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
@@ -91,5 +94,21 @@ public final class Constants {
     public static final class limelightConstants {
         public static final double desiredX = 0.0;
         public static final double desiredY = 0.0;
+    }
+
+    public static final class driverXbox {
+        public static final XboxController xboxController = new XboxController(0);
+    }
+    public static final class driverJoystick {
+        public static final Joystick joystick = new Joystick(1);
+
+        public static final JoystickButton shooterTrigger = new JoystickButton(joystick, 1); //Fires the shooter
+        public static final JoystickButton shooterRamp = new JoystickButton(joystick, 2); //Ramps the shooter up to speed
+
+        public static final JoystickButton winchUpButton = new JoystickButton(joystick, 11); //Winch up
+        public static final JoystickButton winchDownButton = new JoystickButton(joystick, 12); //Winch down
+
+        public static final JoystickButton climberPistonUpButton = new JoystickButton(joystick, 7); //Piston Up
+        public static final JoystickButton climberPistonDownButton = new JoystickButton(joystick, 8); //Piston Down
     }
 }
