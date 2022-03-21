@@ -15,11 +15,6 @@
         "header": {
           "open": true
         }
-      },
-      "Talon FX[16]": {
-        "header": {
-          "open": true
-        }
       }
     },
     "PWM Outputs": {
@@ -53,6 +48,7 @@
       "/LiveWindow/PowerController": "Subsystem",
       "/LiveWindow/Shooter": "Subsystem",
       "/LiveWindow/Ungrouped/DifferentialDrive[1]": "DifferentialDrive",
+      "/LiveWindow/Ungrouped/DigitalInput[0]": "Digital Input",
       "/LiveWindow/Ungrouped/DigitalInput[1]": "Digital Input",
       "/LiveWindow/Ungrouped/PWMSparkMax[0]": "Motor Controller",
       "/LiveWindow/Ungrouped/PWMSparkMax[1]": "Motor Controller",

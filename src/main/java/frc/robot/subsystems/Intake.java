@@ -14,8 +14,7 @@ public class Intake extends SubsystemBase {
 
     static DoubleSolenoid intakePiston = new DoubleSolenoid(PneumaticsModuleType.REVPH, Constants.intakePistonFoward, Constants.intakePistonReverse);
 
-    public Intake() {
-
+    public Intake() {;
     }
 
     public void spinIntake(double speed) {

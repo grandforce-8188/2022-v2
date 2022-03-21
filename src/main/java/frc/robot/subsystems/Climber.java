@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -14,7 +15,10 @@ public class Climber extends SubsystemBase {
     static WPI_TalonFX climberMotor = new WPI_TalonFX(Constants.fxClimber);
     static DoubleSolenoid pivotPiston = new DoubleSolenoid(PneumaticsModuleType.REVPH, Constants.climberPistonFoward, Constants.climberPistonReverse);
 
-    DigitalInput magLimit = new DigitalInput(1);
+    DigitalInput upperMagLimit = new DigitalInput(0);
+    DigitalInput lowerMagLimit = new DigitalInput(1);
+
+    DigitalInput legalMagLimit = new DigitalInput(2);
 
     public static double climberPosition = 0;
     private static double oldClimberPosition = 0;
@@ -27,7 +31,6 @@ public class Climber extends SubsystemBase {
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
-
         double newClimberPosition = climberMotor.getSelectedSensorPosition();
 
         if (newClimberPosition < oldClimberPosition)
@@ -65,15 +68,12 @@ public class Climber extends SubsystemBase {
 
     public void runWinch(double speed)
     {
-        climberMotor.set(speed*0.6);
-//        if(!(magLimit.get() && speed > 0))
-//        {
-//            climberMotor.set(speed*0.6);
-//        }
-//        else if(magLimit.get() && speed > 0)
-//        {
-//            climberMotor.set(0);
-//        }
+        if((!upperMagLimit.get() && speed > 0 ) || (!lowerMagLimit.get() && speed < 0) ||
+                (!legalMagLimit.get() && speed >0 && pivotPiston.get() == DoubleSolenoid.Value.kForward)){
+            climberMotor.set(0);
+        } else {
+            climberMotor.set(speed * 0.9);
+        }
     }
 
     public void extendClimberPiston()
@@ -105,5 +105,10 @@ public class Climber extends SubsystemBase {
     {
         climberMotor.configVoltageCompSaturation(Constants.saturationVoltage);
         climberMotor.enableVoltageCompensation(enabled);
+    }
+
+    public DoubleSolenoid.Value getPivotPistonState()
+    {
+        return pivotPiston.get();
     }
 }

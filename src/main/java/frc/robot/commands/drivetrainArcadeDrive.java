@@ -25,16 +25,17 @@ public class drivetrainArcadeDrive extends CommandBase {
     }
 
     public void execute() {
-        double twist = -xboxController.getLeftX();
-        double speed;
+        double speed = 0.8*xboxController.getRightY();
+        double twist = -0.8*xboxController.getLeftX();
+        //
+  //      if(xboxController.getLeftTriggerAxis() > 0.1) {
+   //         speed = xboxController.getLeftTriggerAxis();
+   //     }
+   //     else{
+   //         speed = -xboxController.getRightTriggerAxis();
+      //  }
 
-        if(xboxController.getLeftTriggerAxis() > 0.1) {
-            speed = xboxController.getLeftTriggerAxis();
-        }
-        else{
-            speed = -xboxController.getRightTriggerAxis();
-        }
-
-        drivetrain.arcadeDrive(speed, twist);
+        drivetrain.arcadeDrive(Math.pow(speed, 2)*Math.signum(speed),
+                Math.pow(twist, 2)*Math.signum(twist));
     }
 }

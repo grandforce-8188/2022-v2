@@ -4,15 +4,11 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.drivetrainArcadeDrive;
-import frc.robot.commands.fireShooter;
+import frc.robot.commands.runIntake;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Feeder;
@@ -38,6 +34,8 @@ public class Robot extends TimedRobot {
   static LocalDateTime now = LocalDateTime.now();
   public static String startDate = date.format(now);
 
+  Compressor compressor = new Compressor(1, PneumaticsModuleType.REVPH);
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -49,6 +47,9 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
     setNetworkTablesFlushEnabled(true);
     //RobotController.setBrownoutVoltage(5.5);
+    compressor.enableDigital();
+    intake.extendIntake(true);
+    drivetrain.setBraking(true, true);
   }
 
   static int brownoutCount = 0;
@@ -75,7 +76,9 @@ public class Robot extends TimedRobot {
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    drivetrain.setBraking(false, false);
+  }
 
   @Override
   public void disabledPeriodic() {}
@@ -83,6 +86,7 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+    drivetrain.setBraking(true, true);
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
@@ -95,6 +99,8 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousPeriodic() {}
 
+  public DoubleSolenoid.Value climberUpPosition;
+
   @Override
   public void teleopInit() {
     // This makes sure that the autonomous stops running when
@@ -104,8 +110,11 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    drivetrain.setBraking(true, true);
     drivetrain.setDefaultCommand(new drivetrainArcadeDrive(drivetrain, joystick, xboxController)); //Joystick
-    shooter.setDefaultCommand(new fireShooter(shooter, feeder, new JoystickButton(joystick, 1)));
+    //shooter.setDefaultCommand(new ShooterSetPercentOutput(shooter, 0.0));
+    intake.setDefaultCommand(new runIntake(intake, feeder, xboxController));
+    //shooter.setDefaultCommand(new fireShooter(shooter, feeder, new JoystickButton(joystick, 1)));
   }
 
   public final Climber climber = new Climber();
@@ -118,47 +127,43 @@ public class Robot extends TimedRobot {
 
   // private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
 
-  private final XboxController xboxController = new XboxController(0);
+  private final XboxController xboxController = Constants.driverXbox.xboxController;
   private final Joystick joystick = new Joystick(1);
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    JoystickButton winchUpButton = new JoystickButton(joystick, 11); //Winch up
-    JoystickButton winchDownButton = new JoystickButton(joystick, 12); //Winch down
-
-    JoystickButton pistonUpButton = new JoystickButton(joystick, 7); //Piston Up
-    JoystickButton pistonDownButton = new JoystickButton(joystick, 8); //Piston Down
-
-    if(winchUpButton.get()) {
+    if(Constants.driverJoystick.winchUpButton.get()) {
       climber.runWinch(1);
-    } else if(winchDownButton.get()) {
+    } else if(Constants.driverJoystick.winchDownButton.get()) {
       climber.runWinch(-1);
     } else{
       climber.runWinch(0);
     }
 
-    if(pistonUpButton.get()) {
+    if(Constants.driverJoystick.climberPistonUpButton.get()) {
       climber.extendClimberPiston();
-    } else if(pistonDownButton.get()) {
+    } else if(Constants.driverJoystick.climberPistonDownButton.get()) {
       climber.retractClimberPiston();
     }
 
-    if(xboxController.getRawButton(2))
+    if(xboxController.getRawButton(4))
     {
       intake.extendIntake(true);
-    } else if (xboxController.getRawButton(3))
+    } else if (xboxController.getRawButton(1))
     {
       intake.extendIntake(false);
     }
 
-    if(xboxController.getRawButton(4)) {
-        intake.spinIntake(-1.0);
-        feeder.runFeeder();
-    } else if (xboxController.getRawButton(1)) {
-        intake.spinIntake(1.0);
-        feeder.runFeeder();
-    }
+
+
+    // if(xboxController.getRawButton(4)) {
+    //     intake.spinIntake(-1.0);
+    //     feeder.runFeeder();
+    // } else if (xboxController.getRawButton(1)) {
+    //     intake.spinIntake(1.0);
+    //     feeder.runFeeder();
+    // }
     else
     {
       intake.spinIntake(0.0);
@@ -169,11 +174,21 @@ public class Robot extends TimedRobot {
     {
       shooter.runKickWheel(-1.0);
       feeder.runFeeder();
+      intake.spinIntake(-1.0);
     }
     else if(!joystick.getRawButton(1))
     {
       shooter.runKickWheel(0.0);
       feeder.stopFeeder();
+      intake.spinIntake(0.0);
+    }
+
+    if(joystick.getRawButton(2))
+    {
+      shooter.setShooterSpeed(4400);
+    }
+    else{
+      shooter.stopShooter();
     }
   }
 

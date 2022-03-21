@@ -1,10 +1,10 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.can.VictorSPX;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
+import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
-import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -18,10 +18,29 @@ public class Shooter extends SubsystemBase {
         //shooterFollower.follow(shooterLeader);
         //shooterFollower.setInverted(true);
         shooterLeader.enableVoltageCompensation(true);
+
+        shooterLeader.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor,
+                0,
+                30);
+
+        shooterLeader.configNominalOutputForward(0, 30);
+        shooterLeader.configNominalOutputReverse(0, 30);
+        shooterLeader.configPeakOutputForward(1, 30);
+        shooterLeader.configPeakOutputReverse(-1, 30);
+
+        shooterLeader.config_kP(0, 0.1, 30);
+        shooterLeader.config_kI(0, 0.0, 30);
+        shooterLeader.config_kD(0, 5, 30);
+
+        kickWheel.setNeutralMode(NeutralMode.Coast);
     }
 
-    public void setShooterSpeed(double speed) {
-        shooterLeader.set(speed);
+    public void setShooterSpeed(int RPM) {
+        shooterLeader.set(TalonFXControlMode.Velocity, (RPM*2048)/600);
+    }
+
+    public void stopShooter(){
+        shooterLeader.set(0.0);
     }
 
     public void runKickWheel(double speed) {
@@ -31,5 +50,4 @@ public class Shooter extends SubsystemBase {
     public double getRPM() {
         return (shooterLeader.getSelectedSensorPosition()*600.0)/2048.0;
     }
-
 }

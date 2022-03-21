@@ -1,8 +1,5 @@
 package frc.robot.commands;
 
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.subsystems.Feeder;
@@ -13,15 +10,14 @@ public class fireShooter extends CommandBase {
     Feeder feeder;
     JoystickButton button;
 
-    int desiredRPM = 6000;
+    int desiredRPM = 6100;
 
     public fireShooter(Shooter shooterToFire, Feeder feederToFire, JoystickButton buttonToPress) {
         shooter = shooterToFire;
         feeder = feederToFire;
         button = buttonToPress;
 
-        addRequirements(shooter);
-        addRequirements(feeder);
+        addRequirements(shooter, feeder);
     }
 
     public void execute() {
