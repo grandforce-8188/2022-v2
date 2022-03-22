@@ -113,7 +113,7 @@ public class Robot extends TimedRobot {
     drivetrain.setBraking(true, true);
     drivetrain.setDefaultCommand(new drivetrainArcadeDrive(drivetrain, joystick, xboxController)); //Joystick
     //shooter.setDefaultCommand(new ShooterSetPercentOutput(shooter, 0.0));
-    intake.setDefaultCommand(new runIntake(intake, feeder, xboxController));
+    intake.setDefaultCommand(new runIntake(intake, feeder, Constants.driverXbox.intakeForwardButton, Constants.driverXbox.intakeReverseButton));
     //shooter.setDefaultCommand(new fireShooter(shooter, feeder, new JoystickButton(joystick, 1)));
   }
 
@@ -128,7 +128,7 @@ public class Robot extends TimedRobot {
   // private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
 
   private final XboxController xboxController = Constants.driverXbox.xboxController;
-  private final Joystick joystick = new Joystick(1);
+  private final Joystick joystick = Constants.driverJoystick.joystick;
 
   /** This function is called periodically during operator control. */
   @Override
@@ -147,43 +147,27 @@ public class Robot extends TimedRobot {
       climber.retractClimberPiston();
     }
 
-    if(xboxController.getRawButton(4))
-    {
+    if(Constants.driverXbox.intakePistonUpButton.get()) {
       intake.extendIntake(true);
-    } else if (xboxController.getRawButton(1))
+    } else if (Constants.driverXbox.intakePistonDownButton.get())
     {
       intake.extendIntake(false);
     }
 
-
-
-    // if(xboxController.getRawButton(4)) {
-    //     intake.spinIntake(-1.0);
-    //     feeder.runFeeder();
-    // } else if (xboxController.getRawButton(1)) {
-    //     intake.spinIntake(1.0);
-    //     feeder.runFeeder();
-    // }
-    else
-    {
-      intake.spinIntake(0.0);
-      feeder.stopFeeder();
-    }
-
-    if(joystick.getRawButton(1))
+    if(Constants.driverJoystick.shooterTrigger.get())
     {
       shooter.runKickWheel(-1.0);
       feeder.runFeeder();
       intake.spinIntake(-1.0);
     }
-    else if(!joystick.getRawButton(1))
+    else if(!Constants.driverJoystick.shooterTrigger.get())
     {
       shooter.runKickWheel(0.0);
       feeder.stopFeeder();
       intake.spinIntake(0.0);
     }
 
-    if(joystick.getRawButton(2))
+    if(Constants.driverJoystick.shooterRamp.get())
     {
       shooter.setShooterSpeed(4400);
     }

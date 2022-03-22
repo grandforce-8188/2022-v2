@@ -98,6 +98,12 @@ public final class Constants {
 
     public static final class driverXbox {
         public static final XboxController xboxController = new XboxController(0);
+
+        public static final JoystickButton intakePistonUpButton = new JoystickButton(xboxController, XboxController.Button.kY.value);
+        public static final JoystickButton intakePistonDownButton = new JoystickButton(xboxController, XboxController.Button.kA.value);
+
+        public static final JoystickButton intakeForwardButton = new JoystickButton(xboxController, XboxController.Button.kB.value);
+        public static final JoystickButton intakeReverseButton = new JoystickButton(xboxController, XboxController.Button.kX.value);
     }
     public static final class driverJoystick {
         public static final Joystick joystick = new Joystick(1);
@@ -111,4 +117,4 @@ public final class Constants {
         public static final JoystickButton climberPistonUpButton = new JoystickButton(joystick, 7); //Piston Up
         public static final JoystickButton climberPistonDownButton = new JoystickButton(joystick, 8); //Piston Down
     }
-}
+    }
