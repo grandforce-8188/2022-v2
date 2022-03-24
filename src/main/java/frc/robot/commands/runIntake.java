@@ -22,21 +22,11 @@ public class runIntake extends CommandBase {
             forwardButton = forwardButtonToPress;
             reverseButton = reverseButtonToPress;
 
-            addRequirements(intake, feeder);
+            addRequirements(intake);
         }
 
     public void execute()
     {
-        if(forwardButton.get()) {
-            intake.spinIntake(-1.0);
-            feeder.runFeeder();
-        } else if(reverseButton.get()) {
-            intake.spinIntake(1.0);
-            feeder.reverseFeeder();;
-            shooter.runKickWheel(1.0);
-        } else {
-            intake.spinIntake(0.0);
-            feeder.stopFeeder();
-        }
+
     }
 }

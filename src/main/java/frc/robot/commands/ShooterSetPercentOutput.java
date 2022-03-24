@@ -18,7 +18,7 @@ public class ShooterSetPercentOutput extends CommandBase {
 
   @Override
   public void execute() {
-    mShooter.setShooterSpeed(mOutput);
+    mShooter.setShooterSpeed();
   }
 
   @Override

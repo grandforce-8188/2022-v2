@@ -31,7 +31,7 @@ public class Climber extends SubsystemBase {
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
-        double newClimberPosition = climberMotor.getSelectedSensorPosition();
+        double newClimberPosition = 0.0;//climberMotor.getSelectedSensorPosition();
 
         if (newClimberPosition < oldClimberPosition)
         {
@@ -72,13 +72,18 @@ public class Climber extends SubsystemBase {
                 (!legalMagLimit.get() && speed >0 && pivotPiston.get() == DoubleSolenoid.Value.kForward)){
             climberMotor.set(0);
         } else {
-            climberMotor.set(speed * 0.9);
+            climberMotor.set(speed);
         }
     }
 
     public void extendClimberPiston()
     {
         pivotPiston.set(DoubleSolenoid.Value.kReverse);
+    }
+
+    public void toggleClimberPiston()
+    {
+        pivotPiston.toggle();
     }
 
     public void retractClimberPiston()

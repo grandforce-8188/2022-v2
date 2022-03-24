@@ -28,6 +28,10 @@ public class Limelight extends SubsystemBase
      */
     public double getLimelightTarget() {return networkTable.getEntry("tv").getDouble(0.0);}
 
+    public Limelight(){
+        limelightLED.setNumber(0);
+    }
+
     /**
      * Gets the horizontal offset from the crosshair to the target
      * @return The horizontal offset from the crosshair to the target
@@ -55,7 +59,7 @@ public class Limelight extends SubsystemBase
      */
     public void enableLED()
     {
-        limelightLED.setNumber(3);
+        //limelightLED.setNumber(3);
     }
 
     /**
@@ -63,7 +67,7 @@ public class Limelight extends SubsystemBase
      */
     public void disableLED()
     {
-        limelightLED.setNumber(1);
+        //limelightLED.setNumber(1);
     }
 
     /**

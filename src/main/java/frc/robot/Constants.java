@@ -29,7 +29,7 @@ public final class Constants {
     public static final int PCM = 1,
                             PDP = 2;
 
-    public static final int gearShifterFoward = 2,
+    public static final int gearShifterForward = 2,
                             gearShifterReverse = 3,
                             intakePistonFoward = 0,
                             intakePistonReverse=1,
@@ -60,11 +60,8 @@ public final class Constants {
     public static final int fxShooterLeader = 17,
                             fxShooterFollower = 18;
 
-    public static final int srxKickWheel = 24;
+    public static final int spxKickWheel = 24;
 
-    public static final int pwmFeederLeader = 0,
-                            pwmFeederFollower= 1,
-                            pwmShooterKickWheel=2;
 
     /////////////////////////////////////////////////////////////////////////////
 
@@ -104,7 +101,11 @@ public final class Constants {
 
         public static final JoystickButton intakeForwardButton = new JoystickButton(xboxController, XboxController.Button.kB.value);
         public static final JoystickButton intakeReverseButton = new JoystickButton(xboxController, XboxController.Button.kX.value);
+
+        public static final JoystickButton gearshiftHighButton = new JoystickButton(xboxController, XboxController.Button.kRightBumper.value);
+        public static final JoystickButton gearshiftLowButton = new JoystickButton(xboxController, XboxController.Button.kLeftBumper.value);
     }
+
     public static final class driverJoystick {
         public static final Joystick joystick = new Joystick(1);
 
@@ -114,7 +115,11 @@ public final class Constants {
         public static final JoystickButton winchUpButton = new JoystickButton(joystick, 11); //Winch up
         public static final JoystickButton winchDownButton = new JoystickButton(joystick, 12); //Winch down
 
-        public static final JoystickButton climberPistonUpButton = new JoystickButton(joystick, 7); //Piston Up
-        public static final JoystickButton climberPistonDownButton = new JoystickButton(joystick, 8); //Piston Down
+        public static final JoystickButton climberPistonButton = new JoystickButton(joystick, 8); //Piston Up
+
+        public static final JoystickButton intakeButton = new JoystickButton(joystick, 3); //Intake
+        public static final JoystickButton reverseIntakeButton = new JoystickButton(joystick, 4); //Intake reverse
+
+        public static final JoystickButton shooterAimButton = new JoystickButton(joystick, 6);
     }
     }

@@ -4,17 +4,12 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.commands.drivetrainArcadeDrive;
-import frc.robot.commands.runIntake;
-import frc.robot.subsystems.Climber;
-import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.Feeder;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.PowerController;
-import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -34,6 +29,14 @@ public class Robot extends TimedRobot {
   static LocalDateTime now = LocalDateTime.now();
   public static String startDate = date.format(now);
 
+  public final Climber climber = new Climber();
+  public final Drivetrain drivetrain = new Drivetrain();
+  public final Intake intake = new Intake();
+  public final PowerController powerController = new PowerController();
+  public final Shooter shooter = new Shooter();
+  public final Feeder feeder = new Feeder();
+  public final Limelight limelight = new Limelight();
+
   Compressor compressor = new Compressor(1, PneumaticsModuleType.REVPH);
 
   /**
@@ -50,6 +53,7 @@ public class Robot extends TimedRobot {
     compressor.enableDigital();
     intake.extendIntake(true);
     drivetrain.setBraking(true, true);
+    limelight.enableLED();
   }
 
   static int brownoutCount = 0;
@@ -77,11 +81,13 @@ public class Robot extends TimedRobot {
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
-    drivetrain.setBraking(false, false);
+    limelight.disableLED();
   }
 
   @Override
   public void disabledPeriodic() {}
+
+  static long startTime = System.currentTimeMillis();
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
@@ -89,15 +95,56 @@ public class Robot extends TimedRobot {
     drivetrain.setBraking(true, true);
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
+    startTime = System.currentTimeMillis();
+    drivetrain.shiftGears(true);
+    System.out.println("init run");
+
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
   }
 
+
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+    long currentTime = System.currentTimeMillis();
+    double timeDifference = currentTime - startTime;
+    System.out.println(currentTime - startTime);
+    if (timeDifference < 2000) {
+      intake.extendIntake(false);
+      drivetrain.setDrive(-0.9, -0.9);
+      intake.spinIntake(-1);
+      //feeder.runFeeder();
+    }
+    else if (timeDifference > 2000 && timeDifference < 2500) {
+      drivetrain.setDrive(0, 0);
+      //feeder.stopFeeder();
+      intake.spinIntake(0);
+      //shooter.setShooterSpeed(4400);
+    }
+    else if (timeDifference > 2500 && timeDifference < 4000){
+      drivetrain.setDrive(0.9, 0.9);
+      //shooter.setShooterSpeed(4400);
+    }
+    else if (timeDifference > 4000 && timeDifference < 10000) {
+      drivetrain.setDrive(0, 0);
+      shooter.setShooterSpeed();
+    }
+    if (timeDifference > 7000 && timeDifference < 10000) {
+      intake.spinIntake(-1);
+      feeder.runFeeder();
+      shooter.runKickWheel(-1);
+    }
+
+    if ((currentTime - startTime) > 10000){
+      shooter.setShooterSpeed();
+      intake.spinIntake(0);
+      feeder.stopFeeder();
+      shooter.runKickWheel(0);
+    }
+  }
 
   public DoubleSolenoid.Value climberUpPosition;
 
@@ -113,16 +160,9 @@ public class Robot extends TimedRobot {
     drivetrain.setBraking(true, true);
     drivetrain.setDefaultCommand(new drivetrainArcadeDrive(drivetrain, joystick, xboxController)); //Joystick
     //shooter.setDefaultCommand(new ShooterSetPercentOutput(shooter, 0.0));
-    intake.setDefaultCommand(new runIntake(intake, feeder, Constants.driverXbox.intakeForwardButton, Constants.driverXbox.intakeReverseButton));
     //shooter.setDefaultCommand(new fireShooter(shooter, feeder, new JoystickButton(joystick, 1)));
   }
 
-  public final Climber climber = new Climber();
-  public final Drivetrain drivetrain = new Drivetrain();
-  public final Intake intake = new Intake();
-  public final PowerController powerController = new PowerController();
-  public final Shooter shooter = new Shooter();
-  public final Feeder feeder = new Feeder();
 
 
   // private final ExampleCommand m_autoCommand = new ExampleCommand(m_exampleSubsystem);
@@ -134,17 +174,23 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     if(Constants.driverJoystick.winchUpButton.get()) {
-      climber.runWinch(1);
+      climber.runWinch(.7);
     } else if(Constants.driverJoystick.winchDownButton.get()) {
       climber.runWinch(-1);
     } else{
       climber.runWinch(0);
     }
 
-    if(Constants.driverJoystick.climberPistonUpButton.get()) {
-      climber.extendClimberPiston();
-    } else if(Constants.driverJoystick.climberPistonDownButton.get()) {
-      climber.retractClimberPiston();
+    if(Constants.driverXbox.gearshiftHighButton.get()){
+      drivetrain.shiftGears(false);
+    }
+    else if(Constants.driverXbox.gearshiftLowButton.get())
+    {
+      drivetrain.shiftGears(true);
+    }
+
+    if(Constants.driverJoystick.climberPistonButton.get()) {
+      climber.toggleClimberPiston();
     }
 
     if(Constants.driverXbox.intakePistonUpButton.get()) {
@@ -154,26 +200,35 @@ public class Robot extends TimedRobot {
       intake.extendIntake(false);
     }
 
-    if(Constants.driverJoystick.shooterTrigger.get())
-    {
-      shooter.runKickWheel(-1.0);
-      feeder.runFeeder();
-      intake.spinIntake(-1.0);
-    }
-    else if(!Constants.driverJoystick.shooterTrigger.get())
-    {
-      shooter.runKickWheel(0.0);
-      feeder.stopFeeder();
-      intake.spinIntake(0.0);
-    }
-
     if(Constants.driverJoystick.shooterRamp.get())
     {
-      shooter.setShooterSpeed(4400);
+      shooter.setShooterSpeed();
     }
     else{
       shooter.stopShooter();
     }
+
+    if(Constants.driverXbox.intakeForwardButton.get() || Constants.driverJoystick.shooterTrigger.get() || joystick.getRawButton(3)) {
+      intake.spinIntake(-1.0);
+      feeder.runFeeder();
+      if(Constants.driverJoystick.shooterRamp.get())
+      {
+        shooter.runKickWheel(-1.0);
+      }
+    } else if(Constants.driverXbox.intakeReverseButton.get()) {
+      intake.spinIntake(1.0);
+      feeder.reverseFeeder();;
+      shooter.runKickWheel(1.0);
+    } else {
+      intake.spinIntake(0.0);
+      feeder.stopFeeder();
+      shooter.runKickWheel(0.0);
+    }
+
+//    if(Constants.driverJoystick.shooterAimButton.get())
+//    {
+//      drivetrain.aim();
+//    }
   }
 
   @Override

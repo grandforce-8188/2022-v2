@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 
@@ -15,6 +17,8 @@ public class Drivetrain extends SubsystemBase {
     static boolean leftBrake = false;
     static boolean rightBrake = false;
 
+    Limelight limelight = new Limelight();
+
     static WPI_TalonFX leftOne = new WPI_TalonFX(Constants.fxLeftOne);
     static WPI_TalonFX leftTwo = new WPI_TalonFX(Constants.fxLeftTwo);
     static WPI_TalonFX leftThree = new WPI_TalonFX(Constants.fxLeftThree);
@@ -29,8 +33,19 @@ public class Drivetrain extends SubsystemBase {
 
     static DifferentialDrive drive = new DifferentialDrive(leftMotors, rightMotors);
 
+    static DoubleSolenoid gearshifter =
+            new DoubleSolenoid(PneumaticsModuleType.REVPH, Constants.gearShifterForward, Constants.gearShifterReverse);
+
+    PIDController drivetrainAimer = new PIDController(0.35, 0.0, 0.0018);
+
     public Drivetrain() {
         rightMotors.setInverted(true);
+    }
+
+    public double aim(){
+
+        //arcadeDrive(0.0,
+                return MathUtil.clamp(drivetrainAimer.calculate(limelight.getLimelightX() ,0), -0.4, 0.4);//);
     }
 
     public void arcadeDrive(double move, double rotate) {
@@ -55,6 +70,20 @@ public class Drivetrain extends SubsystemBase {
      */
     public void setDrive(double left, double right) {
         drive.tankDrive(left, right);
+    }
+
+    /**
+     *
+     * @param lowGear Low gear = true, high gear = false
+     */
+    public void shiftGears(boolean lowGear)
+    {
+        if(lowGear) {
+            gearshifter.set(DoubleSolenoid.Value.kReverse);
+        }
+        else{
+            gearshifter.set(DoubleSolenoid.Value.kForward);
+        }
     }
 
     public void setBraking(boolean left, boolean right) {
