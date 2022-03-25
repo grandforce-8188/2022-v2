@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
+import frc.robot.Robot;
 import frc.robot.subsystems.Drivetrain;
 
 import java.io.File;
@@ -29,10 +30,10 @@ public class drivetrainArcadeDrive extends CommandBase {
         double speed = 0.8 * xboxController.getRightY();
         double twist = -0.8 * xboxController.getLeftX();
 
-        if(Constants.driverJoystick.shooterAimButton.get()) {
+        if(Robot.limelightAim) {
             twist = drivetrain.aim();
+            System.out.println("AIMING");
         }
-        System.out.println(twist);
         drivetrain.arcadeDrive(speed, twist);
 
 //        double backwards = xboxController.getLeftTriggerAxis();

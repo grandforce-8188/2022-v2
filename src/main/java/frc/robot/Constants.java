@@ -112,13 +112,17 @@ public final class Constants {
         public static final JoystickButton shooterTrigger = new JoystickButton(joystick, 1); //Fires the shooter
         public static final JoystickButton shooterRamp = new JoystickButton(joystick, 2); //Ramps the shooter up to speed
 
-        public static final JoystickButton winchUpButton = new JoystickButton(joystick, 11); //Winch up
-        public static final JoystickButton winchDownButton = new JoystickButton(joystick, 12); //Winch down
+        public static final JoystickButton winchUpButton = new JoystickButton(joystick, 12); //Winch up
+        public static final JoystickButton winchDownButton = new JoystickButton(joystick, 11); //Winch down
 
-        public static final JoystickButton climberPistonButton = new JoystickButton(joystick, 8); //Piston Up
+        public static final JoystickButton climberPistonUpButton = new JoystickButton(joystick, 8);
+        public static final JoystickButton climberPistonDownButton = new JoystickButton(joystick, 7); //Piston Up
 
         public static final JoystickButton intakeButton = new JoystickButton(joystick, 3); //Intake
         public static final JoystickButton reverseIntakeButton = new JoystickButton(joystick, 4); //Intake reverse
+
+        public static final JoystickButton shooterStaticButton = new JoystickButton(joystick, 5);
+        public static final JoystickButton shooterLowGoalButton = new JoystickButton(joystick, 9);
 
         public static final JoystickButton shooterAimButton = new JoystickButton(joystick, 6);
     }

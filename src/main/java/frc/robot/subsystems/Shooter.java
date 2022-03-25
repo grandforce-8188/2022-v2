@@ -39,7 +39,12 @@ public class Shooter extends SubsystemBase {
         kickWheel.setNeutralMode(NeutralMode.Coast);
     }
 
-    public void setShooterSpeed() {
+    public void setShooterSpeed(double RPM){
+        shooterLeader.set(TalonFXControlMode.Velocity, (RPM*2048)/600);
+                //(velocity.calculateEquation(limelight.getLimelightY(), limelight.getLimelightTarget())*2048)/600);
+    }
+
+    public void autoShooterSpeed() {
         limelight.enableLED();
         double rpm = 6000.0;
         shooterLeader.set(TalonFXControlMode.Velocity, //(rpm*2048)/600);

@@ -83,7 +83,15 @@ public class Climber extends SubsystemBase {
 
     public void toggleClimberPiston()
     {
-        pivotPiston.toggle();
+        switch(pivotPiston.get())
+        {
+            case kForward:
+                pivotPiston.set(DoubleSolenoid.Value.kReverse);
+                break;
+            case kReverse:
+                pivotPiston.set(DoubleSolenoid.Value.kForward);
+                break;
+        }
     }
 
     public void retractClimberPiston()
