@@ -5,7 +5,8 @@ public class shooterVelocity {
                  third = 0.0771,
                  second = -0.4111,
                  first = -43.01446,
-                 zeroth = 5506.0435;
+                 zeroth = 4800.0435;
+
     public double calculateEquation(double limelightY, double limelightTV){
 
         if(limelightY >= 7.2){
@@ -20,7 +21,7 @@ public class shooterVelocity {
                     - (second * Math.pow(limelightY, 2)) - (first * limelightY) + (zeroth));
         }
         else {
-            return 4900;
+            return 4400;
         }
     }
 }

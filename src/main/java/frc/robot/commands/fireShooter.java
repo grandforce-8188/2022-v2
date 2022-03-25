@@ -23,11 +23,11 @@ public class fireShooter extends CommandBase {
     public void execute() {
         if(button.get())
         {
-            shooter.setShooterSpeed();
+            shooter.autoShooterSpeed();
         }
         else
         {
-            shooter.setShooterSpeed();
+            shooter.autoShooterSpeed();
         }
     }
     //double actualRPM = shooter.getRPM();

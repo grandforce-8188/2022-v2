@@ -15,8 +15,8 @@ public class Climber extends SubsystemBase {
     static WPI_TalonFX climberMotor = new WPI_TalonFX(Constants.fxClimber);
     static DoubleSolenoid pivotPiston = new DoubleSolenoid(PneumaticsModuleType.REVPH, Constants.climberPistonFoward, Constants.climberPistonReverse);
 
-    DigitalInput upperMagLimit = new DigitalInput(0);
-    DigitalInput lowerMagLimit = new DigitalInput(1);
+    DigitalInput upperMagLimit = new DigitalInput(1);
+    DigitalInput lowerMagLimit = new DigitalInput(0);
 
     DigitalInput legalMagLimit = new DigitalInput(2);
 
@@ -83,7 +83,15 @@ public class Climber extends SubsystemBase {
 
     public void toggleClimberPiston()
     {
-        pivotPiston.toggle();
+        switch(pivotPiston.get())
+        {
+            case kForward:
+                pivotPiston.set(DoubleSolenoid.Value.kReverse);
+                break;
+            case kReverse:
+                pivotPiston.set(DoubleSolenoid.Value.kForward);
+                break;
+        }
     }
 
     public void retractClimberPiston()

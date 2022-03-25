@@ -40,6 +40,13 @@ public class Drivetrain extends SubsystemBase {
 
     public Drivetrain() {
         rightMotors.setInverted(true);
+
+        leftOne.setSafetyEnabled(false);
+        leftTwo.setSafetyEnabled(false);
+        leftThree.setSafetyEnabled(false);
+        rightOne.setSafetyEnabled(false);
+        rightTwo.setSafetyEnabled(false);
+        rightThree.setSafetyEnabled(false);
     }
 
     public double aim(){
